@@ -1,6 +1,8 @@
 <script setup lang="ts">
     import type { ReconciliationData } from "@/shared/models/ReconciliationData";
-import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
+    import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
+    import CustomInput from "../components/CustomInput.vue"
+    import { ref } from "@vue/reactivity";
 
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
@@ -46,7 +48,7 @@ import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
 
         data.MonthlyDatas.push(month);
     }
-    const yearData = new YearWiseCalculatedData(data);
+    const yearData = ref(new YearWiseCalculatedData(data));
 
     // TODO: move this inside the constructor for year. because now it will do these loops every time the ui loads.
     const uniqueIncomeTypes = new Set<string>();    // this is so that we know dynamically how many row span to give in the table
@@ -59,7 +61,7 @@ import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
     let expenseIdMonthBasedMonthDatas = new Map<string, ReconciliationData >();
 
 
-    yearData.MonthlyDatas.forEach( (monthlyData) => {
+    yearData.value.MonthlyDatas.forEach( (monthlyData) => {
         monthlyData.Incomes.forEach( (income) => {
             uniqueIncomeTypes.add( income.Id);
             incomeIdToName.set(income.Id, income.Name);
@@ -83,6 +85,49 @@ import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
             }
         });
     });
+
+    // here we'll get key as incomeTypeId_MonthId
+    function incomeChanged(value : string, key : string){
+        let id = key.split("_")[0];
+        let month = parseInt(key.split("_")[1]) ;
+        let found = false;
+        for(let i=0;i<yearData.value.MonthlyDatas.length && !found;i++){
+            if(yearData.value.MonthlyDatas[i].Month == month){
+                for(let j=0;j<yearData.value.MonthlyDatas[i].Incomes.length && !found;j++){
+                    if(yearData.value.MonthlyDatas[i].Incomes[j].Id == id){
+                        yearData.value.MonthlyDatas[i].Incomes[j].Value = parseInt(value);
+                        yearData.value.MonthlyDatas[i].calculate();
+                        found = true;
+                    }
+                }
+            }
+        }
+
+        if(found){
+            yearData.value.calculate();
+        }
+    }
+
+    function expenseChanged(value : string, key : string){
+        let id = key.split("_")[0];
+        let month = parseInt(key.split("_")[1]) ;
+        let found = false;
+        for(let i=0;i<yearData.value.MonthlyDatas.length && !found;i++){
+            if(yearData.value.MonthlyDatas[i].Month == month){
+                for(let j=0;j<yearData.value.MonthlyDatas[i].Expenses.length && !found;j++){
+                    if(yearData.value.MonthlyDatas[i].Expenses[j].Id == id){
+                        yearData.value.MonthlyDatas[i].Expenses[j].Value = parseInt(value);
+                        yearData.value.MonthlyDatas[i].calculate();
+                        found = true;
+                    }
+                }
+            }
+        }
+
+        if(found){
+            yearData.value.calculate();
+        }
+    }
 </script>
 
 
@@ -146,7 +191,11 @@ import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
             <tr v-for="(incomeTypeId, index) in uniqueIncomeTypes" :key="index">
                 <td> {{ incomeIdToName.get(incomeTypeId) }} </td>
                 <td v-for="monthIndex in 12" :key="monthIndex" >
-                    {{ incomeIdMonthBasedMonthDatas.get(incomeTypeId + "_" + monthIndex)?incomeIdMonthBasedMonthDatas.get(incomeTypeId + "_" + monthIndex)?.Value : 0  }}
+                    <CustomInput
+                        class="col-12"
+                        :value='incomeIdMonthBasedMonthDatas.get(incomeTypeId + "_" + monthIndex)?incomeIdMonthBasedMonthDatas.get(incomeTypeId + "_" + monthIndex)?.Value : 0'
+                        @customInputChanged='(v)=>incomeChanged(v, incomeTypeId + "_" + monthIndex)'
+                    />
                 </td>
             </tr>
 
@@ -156,7 +205,13 @@ import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
             <tr v-for="(expenseTypeId, index) in uniqueExpenseTypes" :key="index">
                 <td> {{ expenseIdToName.get(expenseTypeId) }} </td>
                 <td v-for="monthIndex in 12" :key="monthIndex" >
-                    {{ expenseIdMonthBasedMonthDatas.get(expenseTypeId + "_" + monthIndex)?expenseIdMonthBasedMonthDatas.get(expenseTypeId + "_" + monthIndex)?.Value : 0  }}
+                    
+                    <CustomInput
+                        class="col-12"
+                        :value='expenseIdMonthBasedMonthDatas.get(expenseTypeId + "_" + monthIndex)?expenseIdMonthBasedMonthDatas.get(expenseTypeId + "_" + monthIndex)?.Value : 0'
+                        @customInputChanged='(v)=>expenseChanged(v, expenseTypeId + "_" + monthIndex)'
+                    />
+                    <!-- {{ expenseIdMonthBasedMonthDatas.get(expenseTypeId + "_" + monthIndex)?expenseIdMonthBasedMonthDatas.get(expenseTypeId + "_" + monthIndex)?.Value : 0  }} -->
                 </td>
             </tr>
             <tr>
