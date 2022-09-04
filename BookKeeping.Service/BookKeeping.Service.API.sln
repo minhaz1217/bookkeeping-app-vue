@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookKeeping.API", "BookKeeping.API\BookKeeping.API.csproj", "{3D67F4AA-B2C2-410B-A25B-AD5BE6CE1A49}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookKeeping.Domain", "BookKeeping.Domain\BookKeeping.Domain.csproj", "{9B31192C-DFBE-47E3-96E0-89D395865C91}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3D67F4AA-B2C2-410B-A25B-AD5BE6CE1A49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D67F4AA-B2C2-410B-A25B-AD5BE6CE1A49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D67F4AA-B2C2-410B-A25B-AD5BE6CE1A49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D67F4AA-B2C2-410B-A25B-AD5BE6CE1A49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B31192C-DFBE-47E3-96E0-89D395865C91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B31192C-DFBE-47E3-96E0-89D395865C91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B31192C-DFBE-47E3-96E0-89D395865C91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B31192C-DFBE-47E3-96E0-89D395865C91}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D01F8615-835C-4F3A-AECD-D03ED6AAFEAC}
+	EndGlobalSection
+EndGlobal
