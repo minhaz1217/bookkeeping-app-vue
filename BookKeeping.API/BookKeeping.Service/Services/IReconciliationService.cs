@@ -1,4 +1,5 @@
 ﻿using BookKeeping.Domain.Models;
+using BookKeeping.Service.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace BookKeeping.Service.Services
 {
     public interface IReconciliationService
     {
-        Task<IList<MonthlyData>> GetReconciliations(int year);
+        Task<YearModel> GetReconciliations(int year);
     }
 }

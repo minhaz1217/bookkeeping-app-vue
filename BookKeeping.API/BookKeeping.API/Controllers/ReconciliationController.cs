@@ -18,16 +18,10 @@ namespace BookKeeping.API.Controllers
             _reconciliationService = reconciliationService;
         }
 
-        [HttpGet("get-reconciliation-by-year")]
-        public async Task<IActionResult> GetById(int year, int? month)
+        [HttpGet("get-reconciliations-by-year")]
+        public async Task<IActionResult> GetById(int year)
         {
             return Ok(await _reconciliationService.GetReconciliations(year));
-            return Ok(await _monthlyDataService.GetMonthlyDatas(year, month));
         }
-
-        //public IActionResult GetYearlyData(int year)
-        //{
-
-        //}
     }
 }

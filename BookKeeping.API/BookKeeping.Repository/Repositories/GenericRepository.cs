@@ -20,14 +20,14 @@ namespace BookKeeping.Repository
             dbSet = _context.Set<TEntity>();
         }
 
-        public virtual async Task<IEnumerable<TEntity>> GetAsync(
+        public virtual async Task<IList<TEntity>> GetAsync(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = ""
         )
         {
-            IQueryable<TEntity> query = dbSet; 
-            
+            IQueryable<TEntity> query = dbSet;
+
             if (filter != null)
             {
                 query = query.Where(filter);
@@ -47,7 +47,10 @@ namespace BookKeeping.Repository
                 return await query.ToListAsync();
             }
         }
-
+        public async Task<IList<TEntity>> RawAsync(string sql, params object[] parameters)
+        {
+            return await dbSet.SqlQuery(sql, parameters).ToListAsync();
+        }
         public virtual async Task<TEntity> GetByIDAsync(object id)
         {
             return await dbSet.FindAsync(id);

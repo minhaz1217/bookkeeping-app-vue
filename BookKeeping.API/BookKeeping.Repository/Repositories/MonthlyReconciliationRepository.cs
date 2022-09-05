@@ -1,6 +1,7 @@
 ﻿using BookKeeping.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -17,14 +18,36 @@ namespace BookKeeping.Repository.Repositories
             _repo = repo;
         }
 
-        public async Task<IList<MonthlyReconciliation>> GetReconciliations(
-            IList<int>? reconciliationIds = null,
-            IList<int>? monthlyDataIds = null)
+        public async Task<IList<MonthlyReconciliation>> GetMonthlyReconciliations(IList<int>? monthlyDataIds = null)
         {
-            Expression<Func<MonthlyReconciliation, bool>> filter = (reconciliation) =>
-                (reconciliationIds != null && reconciliationIds.Count > 0 ? reconciliationIds.Contains(reconciliation.ReconciliationId) : true) &&
-                (monthlyDataIds != null && monthlyDataIds.Count > 0 ? monthlyDataIds.Contains(reconciliation.MonthlyDataId) : true);
-            return (await _repo.GetAsync(filter)).ToList();
+
+            string query = @"
+                SELECT 
+                    * 
+                FROM MonthlyReconciliation
+                ";
+            var parameters = new List<SqlParameter>();
+            StringBuilder whereClause = new StringBuilder();
+            if (monthlyDataIds != null && monthlyDataIds.Count > 0)
+            {
+                whereClause.Append(string.Format("MonthlyDataId IN {0}", "(" + string.Join(",", monthlyDataIds) + ")"));
+            }
+
+            if(whereClause.Length > 0)
+            {
+                query = query + " WHERE " + whereClause.ToString();
+            }
+
+            query += ";";
+
+            return await _repo.RawAsync(query);
+            
+            //Expression<Func<MonthlyReconciliation, bool>> filter = (reconciliation) =>
+            //    (reconciliationIds != null && reconciliationIds.Count > 0 ? reconciliationIds.Any( r => r == reconciliation.ReconciliationId) : true) &&
+            //    (monthlyDataIds != null && monthlyDataIds.Count > 0 ? monthlyDataIds.Any(r => r == reconciliation.MonthlyDataId) : true);
+            //return (await _repo.GetAsync(filter)).ToList();
         }
+
+
     }
 }

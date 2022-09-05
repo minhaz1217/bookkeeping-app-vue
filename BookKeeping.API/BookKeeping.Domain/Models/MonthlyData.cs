@@ -20,6 +20,5 @@ namespace BookKeeping.Domain.Models
         public int Year { get; set; }
         public decimal Income { get; set; } = 0;
         public decimal Cost { get; set; } = 0;
-        public ICollection<MonthlyReconciliation> Reconciliations { get; set; } = new List<MonthlyReconciliation>();
     }
 }

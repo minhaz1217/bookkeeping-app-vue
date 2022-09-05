@@ -1,6 +1,7 @@
 ﻿using BookKeeping.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -17,10 +18,30 @@ namespace BookKeeping.Repository.Repositories
             _repo = repo;
         }
 
-        public async Task<IList<Reconciliation>> GetReconciliationsByNames(IList<string> names)
+        public async Task<IList<Reconciliation>> GetReconciliationsByIds(IList<int>? ids = null)
         {
-            Expression<Func<Reconciliation, bool>> filter = (reconciliation) => (names.Contains(reconciliation.Name));
-            return (await _repo.GetAsync(filter)).ToList();
+            string query = @"
+                SELECT 
+                    * 
+                FROM Reconciliation
+                ";
+            var parameters = new List<SqlParameter>();
+            StringBuilder whereClause = new StringBuilder();
+            if (ids != null && ids.Count > 0)
+            {
+                whereClause.Append(string.Format("Id IN {0}", "(" + string.Join(",", ids) + ")"));
+            }
+
+            if (whereClause.Length > 0)
+            {
+                query = query + " WHERE " + whereClause.ToString();
+            }
+
+            query += ";";
+
+            return await _repo.RawAsync(query);
         }
+
+
     }
 }

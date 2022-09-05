@@ -9,6 +9,6 @@ namespace BookKeeping.Repository.Repositories
 {
     public interface IReconciliationRepository
     {
-        Task<IList<Reconciliation>> GetReconciliationsByNames(IList<string> names);
+        Task<IList<Reconciliation>> GetReconciliationsByIds(IList<int>? ids = null);
     }
 }
