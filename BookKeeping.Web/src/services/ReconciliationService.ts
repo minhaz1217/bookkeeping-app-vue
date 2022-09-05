@@ -8,3 +8,15 @@ export const GetReconciliationDataByYear = async (year: number): Promise<YearWis
     let output = new YearWiseCalculatedData(data);
     return output;
 }
+
+export const SaveReconciliationData = async (data : YearWiseCalculatedData)=> {
+    const url = BACKEND_URL + "/api/Reconciliation/save-reconciliation-data";
+    const res = await fetch(url, {
+        method : "POST",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify(data)
+    });
+    return res;
+}

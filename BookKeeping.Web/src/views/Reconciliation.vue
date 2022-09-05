@@ -2,7 +2,7 @@
     import type { ReconciliationData } from "@/shared/models/ReconciliationData";
     import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
     import CustomInput from "../components/CustomInput.vue"
-    import {GetReconciliationDataByYear} from "../services/ReconciliationService"
+    import {GetReconciliationDataByYear, SaveReconciliationData} from "../services/ReconciliationService"
     import { ref } from "@vue/reactivity";
     import { onMounted } from "@vue/runtime-core";
     
@@ -63,7 +63,7 @@
         for(let i=0;i<yearData.value.MonthlyDatas.length && !found;i++){
             if(yearData.value.MonthlyDatas[i].Month == month){
                 for(let j=0;j<yearData.value.MonthlyDatas[i].Incomes.length && !found;j++){
-                    if(yearData.value.MonthlyDatas[i].Incomes[j].Id == id){
+                    if(yearData.value.MonthlyDatas[i].Incomes[j].ReconciliationId == id){
                         yearData.value.MonthlyDatas[i].Incomes[j].Value = parseInt(value);
                         yearData.value.MonthlyDatas[i].calculate();
                         found = true;
@@ -84,7 +84,7 @@
         for(let i=0;i<yearData.value.MonthlyDatas.length && !found;i++){
             if(yearData.value.MonthlyDatas[i].Month == month){
                 for(let j=0;j<yearData.value.MonthlyDatas[i].Expenses.length && !found;j++){
-                    if(yearData.value.MonthlyDatas[i].Expenses[j].Id == id){
+                    if(yearData.value.MonthlyDatas[i].Expenses[j].ReconciliationId == id){
                         yearData.value.MonthlyDatas[i].Expenses[j].Value = parseInt(value);
                         yearData.value.MonthlyDatas[i].calculate();
                         found = true;
@@ -100,6 +100,11 @@
 
     async function dropDownChanged(){
         await populateData(selectedValue.value);
+    }
+
+    async function saveTable(){
+        console.log(JSON.stringify(yearData.value));
+        await SaveReconciliationData(yearData.value);
     }
 </script>
 
@@ -215,4 +220,5 @@
             </tr>
         </tbody>
     </table>
+    <button @click="saveTable">Save Changes</button>
 </template>
