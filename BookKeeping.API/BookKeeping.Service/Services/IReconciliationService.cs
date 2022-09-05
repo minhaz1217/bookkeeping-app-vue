@@ -11,5 +11,6 @@ namespace BookKeeping.Service.Services
     public interface IReconciliationService
     {
         Task<YearModel> GetReconciliations(int year);
+        Task<bool> SaveReconciliationDataAsync(YearModel model);
     }
 }

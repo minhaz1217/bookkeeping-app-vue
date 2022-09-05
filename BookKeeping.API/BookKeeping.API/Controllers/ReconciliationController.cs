@@ -1,4 +1,5 @@
-﻿using BookKeeping.Service.Services;
+﻿using BookKeeping.Service.Models;
+using BookKeeping.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +23,31 @@ namespace BookKeeping.API.Controllers
         [HttpGet("get-reconciliations-by-year")]
         public async Task<IActionResult> GetById(int year)
         {
-            return Ok(await _reconciliationService.GetReconciliations(year));
+            try
+            {
+                return Ok(await _reconciliationService.GetReconciliations(year));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("save-reconciliation-data")]
+        public async Task<IActionResult> SaveReconciliationData(YearModel model)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    return Ok(await _reconciliationService.SaveReconciliationDataAsync(model));
+                }
+                return BadRequest("Something went wrong");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

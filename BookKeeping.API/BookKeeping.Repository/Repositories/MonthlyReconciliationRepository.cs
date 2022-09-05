@@ -49,5 +49,19 @@ namespace BookKeeping.Repository.Repositories
         }
 
 
+        public bool UpdateMonthlyReconciliations(IList<MonthlyReconciliation> reconciliations)
+        {
+            if(reconciliations == null || reconciliations.Count == 0)
+            {
+                return false;
+            }
+
+            foreach(var reconciliation in reconciliations)
+            {
+                _repo.Update(reconciliation);
+            }
+            return true;
+        }
+
     }
 }

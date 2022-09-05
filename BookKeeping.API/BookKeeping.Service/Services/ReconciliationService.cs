@@ -11,6 +11,7 @@ namespace BookKeeping.Service.Services
 {
     public class ReconciliationService : IReconciliationService
     {
+        #region CTOR
         private readonly IMonthlyDataService _monthlyDataService;
         private readonly IMonthlyReconciliationRepository _monthlyReconciliationRepository;
         private readonly IReconciliationRepository _reconciliationRepository;
@@ -25,6 +26,9 @@ namespace BookKeeping.Service.Services
             _reconciliationRepository = reconciliationRepository;
             _monthlyReconciliationRepository = monthlyReconciliationRepository;
         }
+
+        #endregion CTOR
+
 
         public async Task<YearModel> GetReconciliations(int year)
         {
@@ -41,7 +45,7 @@ namespace BookKeeping.Service.Services
             return PrepareYearModel(year, monthlyDatas, monthlyReconciliations, reconciliations);
         }
 
-        public YearModel PrepareYearModel(int year, IList<MonthlyData> months, IList<MonthlyReconciliation> monthlyReconciliations, IList<Reconciliation> reconciliations)
+        private YearModel PrepareYearModel(int year, IList<MonthlyData> months, IList<MonthlyReconciliation> monthlyReconciliations, IList<Reconciliation> reconciliations)
         {
             var yearModel = new YearModel();
             yearModel.Year = year;
@@ -54,7 +58,7 @@ namespace BookKeeping.Service.Services
             return yearModel;
         }
 
-        public MonthModel PrepareMonthModel(MonthlyData month, IList<MonthlyReconciliation> monthlyReconciliations, IList<Reconciliation> reconciliations)
+        private MonthModel PrepareMonthModel(MonthlyData month, IList<MonthlyReconciliation> monthlyReconciliations, IList<Reconciliation> reconciliations)
         {
             var monthModel = new MonthModel();
             monthModel.Month = month.Month;
@@ -91,11 +95,51 @@ namespace BookKeeping.Service.Services
             }
             incomes.OrderBy(x => x.Name);
             expenses.OrderBy(x => x.Name);
-            
+
             monthModel.Incomes = incomes;
             monthModel.Expenses = expenses;
 
             return monthModel;
         }
+
+        public async Task<bool> SaveReconciliationDataAsync(YearModel model)
+        {
+            if (model == null)
+            {
+                return false;
+            }
+
+            if (model.MonthlyDatas.Count == 0)
+            {
+                return false;
+            }
+
+            var monthlyDatas = await _monthlyDataService.GetMonthlyDatas(model.Year);
+            var monthlyDatasIds = monthlyDatas.Select(x => x.Id).ToList();
+
+            var monthlyReconciliations = await _monthlyReconciliationRepository.GetMonthlyReconciliations(monthlyDatasIds);
+            var currentReconciliationModels = new List<ReconciliationModel>();
+            currentReconciliationModels.AddRange(model.MonthlyDatas.SelectMany(x => x.Incomes));
+            currentReconciliationModels.AddRange(model.MonthlyDatas.SelectMany(x => x.Expenses));
+
+
+            var reconciliationsNeededToBeUpdated = new List<MonthlyReconciliation>();
+            foreach (var currentReconciliation in currentReconciliationModels)
+            {
+                var reconciliation = monthlyReconciliations.Where(x => x.Id == currentReconciliation.Id).FirstOrDefault();
+                if (reconciliation != null)
+                {
+                    if (reconciliation.Value != currentReconciliation.Value)
+                    {
+                        reconciliation.Value = currentReconciliation.Value;
+                        reconciliationsNeededToBeUpdated.Add(reconciliation);
+                    }
+                }
+            }
+
+            return _monthlyReconciliationRepository.UpdateMonthlyReconciliations(reconciliationsNeededToBeUpdated);
+        }
+
+
     }
 }

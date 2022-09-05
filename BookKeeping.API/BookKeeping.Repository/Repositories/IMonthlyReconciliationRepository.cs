@@ -10,5 +10,6 @@ namespace BookKeeping.Repository.Repositories
     public interface IMonthlyReconciliationRepository
     {
         Task<IList<MonthlyReconciliation>> GetMonthlyReconciliations(IList<int>? monthlyDataIds = null);
+        bool UpdateMonthlyReconciliations(IList<MonthlyReconciliation> reconciliations);
     }
 }
