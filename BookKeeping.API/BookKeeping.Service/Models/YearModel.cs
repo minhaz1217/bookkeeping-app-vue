@@ -26,6 +26,7 @@ namespace BookKeeping.Service.Models
     public class ReconciliationModel
     {
         public int Id { get; set; }
+        public int ReconciliationId { get; set; }
         public string Name{ get; set; }
         public ReconciliationType Type { get; set; }
         public decimal Value { get; set; }

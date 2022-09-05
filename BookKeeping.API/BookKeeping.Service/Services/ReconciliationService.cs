@@ -73,6 +73,7 @@ namespace BookKeeping.Service.Services
                     var data = new ReconciliationModel
                     {
                         Id = monthlyReconciliation.Id,
+                        ReconciliationId = reconciliation.Id,
                         Name = reconciliation.Name,
                         Value = monthlyReconciliation.Value,
                         Type = reconciliation.Type,
