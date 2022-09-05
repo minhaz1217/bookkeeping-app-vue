@@ -2,54 +2,45 @@
     import type { ReconciliationData } from "@/shared/models/ReconciliationData";
     import {YearWiseCalculatedData} from "../shared/models/YearWIseCalculatedData"
     import CustomInput from "../components/CustomInput.vue"
+    import {GetReconciliationDataByYear} from "../services/ReconciliationService"
     import { ref } from "@vue/reactivity";
+    import { onMounted } from "@vue/runtime-core";
+    
+    let yearData = ref(new YearWiseCalculatedData({Year : 2022}));
+    
+    
+    onMounted(async ()=>{
+        yearData.value = await GetReconciliationDataByYear(2022);
+        yearData.value.MonthlyDatas?.forEach( (monthlyData) => {
+            monthlyData.Incomes?.forEach( (income) => {
+                uniqueIncomeTypes.add( income.ReconciliationId);
+                incomeIdToName.set(income.ReconciliationId, income.Name);
 
+                let key = income.ReconciliationId + "_" + monthlyData.Month;
+                if(incomeIdMonthBasedMonthDatas.has(key)){
+                    incomeIdMonthBasedMonthDatas.set(key, income);
+                }else{
+                    incomeIdMonthBasedMonthDatas.set(key, income);
+                }
+            } );
+            monthlyData.Expenses?.forEach( (expense) => {
+                uniqueExpenseTypes.add( expense.ReconciliationId);
+                expenseIdToName.set(expense.ReconciliationId, expense.Name);
+
+                let key = expense.ReconciliationId + "_" + monthlyData.Month;
+                if(expenseIdMonthBasedMonthDatas.has(key)){
+                    expenseIdMonthBasedMonthDatas.set(key, expense);
+                }else{
+                    expenseIdMonthBasedMonthDatas.set(key, expense);
+                }
+            });
+        });
+
+        console.log(uniqueIncomeTypes, uniqueExpenseTypes);
+    });
+    
+    
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-    var data :any = {
-        Year : 2019,
-        MonthlyDatas : []
-    }
-    data.MonthlyDatas = [];
-    for(let i=1;i<=12;i++){
-        let month :any = {
-                Income: 100,
-                Month: i,
-                Cost: 100,
-                Incomes: [
-                    {
-                        Id : 1,
-                        Name : "Type 1",
-                        Value : 100,
-                        Type : 5
-                    },
-                    {
-                        Id : 2,
-                        Name : "Type 2",
-                        Value : 100,
-                        Type : 5
-                    }
-                ],
-                Expenses:[
-                    {
-                        Id : 1,
-                        Name : "Type 1",
-                        Value : 100,
-                        Type : 10
-                    },
-                    {
-                        Id : 2,
-                        Name : "Type 2",
-                        Value : 100,
-                        Type : 10
-                    }                    
-                ]
-        };
-
-        data.MonthlyDatas.push(month);
-    }
-    const yearData = ref(new YearWiseCalculatedData(data));
-
     // TODO: move this inside the constructor for year. because now it will do these loops every time the ui loads.
     const uniqueIncomeTypes = new Set<string>();    // this is so that we know dynamically how many row span to give in the table
     const uniqueExpenseTypes = new Set<string>();   // we had to use 2 separate variables because in SQL both of them can have same id for different types depending on DB structure. (1 table or 2 table structure).
@@ -61,30 +52,7 @@
     let expenseIdMonthBasedMonthDatas = new Map<string, ReconciliationData >();
 
 
-    yearData.value.MonthlyDatas.forEach( (monthlyData) => {
-        monthlyData.Incomes.forEach( (income) => {
-            uniqueIncomeTypes.add( income.Id);
-            incomeIdToName.set(income.Id, income.Name);
-
-            let key = income.Id + "_" + monthlyData.Month;
-            if(incomeIdMonthBasedMonthDatas.has(key)){
-                incomeIdMonthBasedMonthDatas.set(key, income);
-            }else{
-                incomeIdMonthBasedMonthDatas.set(key, income);
-            }
-        } );
-        monthlyData.Expenses.forEach( (expense) => {
-            uniqueExpenseTypes.add( expense.Id);
-            expenseIdToName.set(expense.Id, expense.Name);
-
-            let key = expense.Id + "_" + monthlyData.Month;
-            if(expenseIdMonthBasedMonthDatas.has(key)){
-                expenseIdMonthBasedMonthDatas.set(key, expense);
-            }else{
-                expenseIdMonthBasedMonthDatas.set(key, expense);
-            }
-        });
-    });
+    
 
     // here we'll get key as incomeTypeId_MonthId
     function incomeChanged(value : string, key : string){
