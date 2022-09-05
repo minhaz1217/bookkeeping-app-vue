@@ -19,6 +19,7 @@ namespace BookKeeping.Domain.Data
 
         public BookKeepingContext() : base("Data Source=\"localhost, 1433\";Initial Catalog=master;User ID=sa;Password=Asd123!!")
         {
+            //this.Configuration.LazyLoadingEnabled = true;
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

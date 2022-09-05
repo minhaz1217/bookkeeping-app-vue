@@ -12,7 +12,7 @@ namespace BookKeeping.Domain.Models
         public int MonthlyDataId { get; set; }
         public int  ReconciliationId { get; set; }
         public decimal Value { get; set; }
-        public Reconciliation Reconciliation { get; set; } = null;
-        public MonthlyData MonthlyData { get; set; } = null;
+        virtual public Reconciliation Reconciliation { get; set; } = null;
+        virtual public MonthlyData MonthlyData { get; set; } = null;
     }
 }
