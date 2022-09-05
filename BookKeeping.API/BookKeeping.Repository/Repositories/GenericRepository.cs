@@ -11,7 +11,7 @@ namespace BookKeeping.Repository
 {
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
-        private readonly BookKeepingContext _context;
+        public BookKeepingContext _context;
         internal DbSet<TEntity> dbSet;
 
         public GenericRepository(BookKeepingContext context)

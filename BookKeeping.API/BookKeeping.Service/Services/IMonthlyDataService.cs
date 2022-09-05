@@ -9,6 +9,6 @@ namespace BookKeeping.Service.Services
 {
     public interface IMonthlyDataService
     {
-        Task<MonthlyData> GetByIDAsync(int id);
+        Task<IList<MonthlyData>> GetMonthlyDatas(int year, int? month);
     }
 }

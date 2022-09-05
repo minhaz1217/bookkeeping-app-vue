@@ -8,17 +8,21 @@ using System.Threading.Tasks;
 
 namespace BookKeeping.Service.Services
 {
-    public class MonthlyDataService : IMonthlyDataService
+    public class ReconciliationService
     {
         private readonly IMonthlyDataRepository _monthlyDataRepository;
-        public MonthlyDataService(IMonthlyDataRepository monthlyDataRepository)
+        public ReconciliationService(IMonthlyDataRepository monthlyDataRepository)
         {
             _monthlyDataRepository = monthlyDataRepository;
         }
 
-        public async Task<IList<MonthlyData>> GetMonthlyDatas(int year, int? month)
+        public async Task<MonthlyData> GetMonthlyData(int year)
         {
-            return await _monthlyDataRepository.GetMonthlyDatas(year, month);
+            var monthlyDatas = new List<MonthlyData>();
+            //MonthlyData.GetMonthlyDataByYear(year)
+            //return await _monthlyDataRepository.GetByIDAsync(id);
+
+            return monthlyDatas.First();
         }
     }
 }

@@ -9,6 +9,6 @@ namespace BookKeeping.Repository.Repositories
 {
     public interface IMonthlyDataRepository
     {
-        Task<MonthlyData> GetByIDAsync(int id);
+        Task<IList<MonthlyData>> GetMonthlyDatas(int year, int? month);
     }
 }

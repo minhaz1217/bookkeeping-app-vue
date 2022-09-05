@@ -15,9 +15,14 @@ namespace BookKeeping.API.Controllers
         }
 
         [HttpGet("get-by-id")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(int year, int? month)
         {
-            return Ok(await _monthlyDataService.GetByIDAsync(id));
+            return Ok(await _monthlyDataService.GetMonthlyDatas(year, month));
         }
+
+        //public IActionResult GetYearlyData(int year)
+        //{
+
+        //}
     }
 }
