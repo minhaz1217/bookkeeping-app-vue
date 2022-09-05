@@ -1,4 +1,5 @@
 ﻿using BookKeeping.Domain.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -14,10 +15,10 @@ namespace BookKeeping.Domain.Data
 
         public DbSet<Reconciliation> reconciliations { get; set; }
         public DbSet<MonthlyData> monthlyDatas { get; set; }
-        public DbSet<MonthlyReconciliation> monthlyReconciliations {get;set;}
+        public DbSet<MonthlyReconciliation> monthlyReconciliations { get; set; }
 
 
-        public BookKeepingContext() : base("Data Source=\"localhost, 1433\";Initial Catalog=master;User ID=sa;Password=Asd123!!")
+        public BookKeepingContext(IConfiguration configuration) : base(configuration.GetConnectionString("SQLServer"))
         {
             //this.Configuration.LazyLoadingEnabled = true;
         }
