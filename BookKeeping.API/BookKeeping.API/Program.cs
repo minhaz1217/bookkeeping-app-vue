@@ -13,6 +13,21 @@ builder.Services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOption
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddPolicy(
+            "AllowCors",
+            builder =>
+            {
+                builder.AllowAnyOrigin().WithMethods(
+                    HttpMethod.Get.Method,
+                    HttpMethod.Put.Method,
+                    HttpMethod.Post.Method,
+                    HttpMethod.Delete.Method).AllowAnyHeader().WithExposedHeaders("CustomHeader");
+            });
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,6 +35,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("AllowCors");
 }
 
 app.UseAuthorization();
