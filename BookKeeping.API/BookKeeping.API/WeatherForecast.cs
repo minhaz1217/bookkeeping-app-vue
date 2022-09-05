@@ -1,4 +1,4 @@
-namespace BookKeeping.Service.API
+namespace BookKeeping.API
 {
     public class WeatherForecast
     {

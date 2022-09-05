@@ -11,7 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\BookKeeping.Domain\BookKeeping.Domain.csproj" />
+    <ProjectReference Include="..\BookKeeping.Repository\BookKeeping.Repository.csproj" />
+    <ProjectReference Include="..\BookKeeping.Service\BookKeeping.Service.csproj" />
   </ItemGroup>
 
 </Project>
