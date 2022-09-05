@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BookKeeping.Repository.Repositories
 {
-    public interface IMonthlyDataRepository
+    public interface IReconciliationRepository
     {
-        Task<IList<MonthlyData>> GetMonthlyDatas(int year, int? month = null);
+        Task<IList<Reconciliation>> GetReconciliationsByNames(IList<string> names);
     }
 }

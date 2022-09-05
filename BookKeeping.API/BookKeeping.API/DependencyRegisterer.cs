@@ -18,6 +18,9 @@ namespace BookKeeping.API
             builder.Services.AddSingleton<IMonthlyDataService, MonthlyDataService>();
             
             builder.Services.AddSingleton<IMonthlyDataRepository, MonthlyDataRepository>();
+            builder.Services.AddSingleton<IReconciliationService, ReconciliationService>();
+            builder.Services.AddSingleton<IReconciliationRepository, ReconciliationRepository>();
+            builder.Services.AddSingleton<IMonthlyReconciliationRepository, MonthlyReconciliationRepository>();
         }
     }
 }

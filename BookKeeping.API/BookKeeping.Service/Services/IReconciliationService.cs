@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace BookKeeping.Service.Services
 {
-    public interface IMonthlyDataService
+    public interface IReconciliationService
     {
-        Task<IList<MonthlyData>> GetMonthlyDatas(int year, int? month = null);
+        Task<IList<MonthlyData>> GetReconciliations(int year);
     }
 }

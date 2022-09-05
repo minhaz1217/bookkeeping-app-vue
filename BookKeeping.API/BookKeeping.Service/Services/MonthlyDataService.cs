@@ -16,7 +16,7 @@ namespace BookKeeping.Service.Services
             _monthlyDataRepository = monthlyDataRepository;
         }
 
-        public async Task<IList<MonthlyData>> GetMonthlyDatas(int year, int? month)
+        public async Task<IList<MonthlyData>> GetMonthlyDatas(int year, int? month = null)
         {
             return await _monthlyDataRepository.GetMonthlyDatas(year, month);
         }

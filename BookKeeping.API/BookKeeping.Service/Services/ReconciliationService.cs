@@ -8,21 +8,32 @@ using System.Threading.Tasks;
 
 namespace BookKeeping.Service.Services
 {
-    public class ReconciliationService
+    public class ReconciliationService : IReconciliationService
     {
-        private readonly IMonthlyDataRepository _monthlyDataRepository;
-        public ReconciliationService(IMonthlyDataRepository monthlyDataRepository)
+        private readonly IMonthlyDataService _monthlyDataService;
+        private readonly IMonthlyReconciliationRepository _monthlyReconciliationRepository;
+        private readonly IReconciliationRepository _reconciliationRepository;
+
+        public ReconciliationService(
+            IMonthlyDataService monthlyDataService,
+            IReconciliationRepository reconciliationRepository,
+            IMonthlyReconciliationRepository monthlyReconciliationRepository
+        )
         {
-            _monthlyDataRepository = monthlyDataRepository;
+            _monthlyDataService = monthlyDataService;
+            _reconciliationRepository = reconciliationRepository;
+            _monthlyReconciliationRepository = monthlyReconciliationRepository;
         }
 
-        public async Task<MonthlyData> GetMonthlyData(int year)
+        public async Task<IList<MonthlyData>> GetReconciliations(int year)
         {
-            var monthlyDatas = new List<MonthlyData>();
-            //MonthlyData.GetMonthlyDataByYear(year)
-            //return await _monthlyDataRepository.GetByIDAsync(id);
+            //var monthlyDatas = new List<MonthlyData>();
+            var monthlyDatas = await _monthlyDataService.GetMonthlyDatas(year);
+            var monthlyDatasIds = monthlyDatas.Select(x => x.Id).ToList();
 
-            return monthlyDatas.First();
+            var monthlyReconciliations = await _monthlyReconciliationRepository.GetReconciliations(monthlyDatasIds);
+
+            return monthlyDatas;
         }
     }
 }
