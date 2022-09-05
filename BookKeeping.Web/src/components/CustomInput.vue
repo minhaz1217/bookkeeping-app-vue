@@ -1,5 +1,6 @@
 <script lang="ts" setup>
     import { defineProps } from 'vue';
+
     const props = defineProps({
         value: Number,
         onChangeOrKeyUp : Function,
@@ -14,8 +15,12 @@
             emit('customInputChanged', e.target.value);
         }
     }
+
+    function onBlur(e : any){
+        e.target.value = props.value;
+    }
 </script>
 
 <template>
-    <input type="number" @change="onChangeOrKeyUp" @keyup="onChangeOrKeyUp" :value="value" />
+    <input type="number" @change="onChangeOrKeyUp" @keyup="onChangeOrKeyUp" :value="value" @blur="onBlur" />
 </template>
