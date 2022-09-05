@@ -7,10 +7,29 @@
     import { onMounted } from "@vue/runtime-core";
     
     let yearData = ref(new YearWiseCalculatedData({Year : 2022}));
-    
+    const selectedValue = ref(2022);
+    const filters = ref(["2020", "2021", "2022"]);
     
     onMounted(async ()=>{
-        yearData.value = await GetReconciliationDataByYear(2022);
+        await populateData(selectedValue.value);
+    });
+    
+    
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    // TODO: move this inside the constructor for year. because now it will do these loops every time the ui loads.
+    const uniqueIncomeTypes = new Set<string>();    // this is so that we know dynamically how many row span to give in the table
+    const uniqueExpenseTypes = new Set<string>();   // we had to use 2 separate variables because in SQL both of them can have same id for different types depending on DB structure. (1 table or 2 table structure).
+    
+    let incomeIdToName = new Map<string, string>(); // we map income type id => income type name. for showing in the UI more easily.
+    let expenseIdToName = new Map<string, string>();
+
+    let incomeIdMonthBasedMonthDatas = new Map<string, ReconciliationData >();  // we map income_type_id + month index => income data. for showing in the UI more easily.
+    let expenseIdMonthBasedMonthDatas = new Map<string, ReconciliationData >();
+
+
+    
+    async function populateData(year : number){
+        yearData.value = await GetReconciliationDataByYear(year);
         yearData.value.MonthlyDatas?.forEach( (monthlyData) => {
             monthlyData.Incomes?.forEach( (income) => {
                 uniqueIncomeTypes.add( income.ReconciliationId);
@@ -35,25 +54,7 @@
                 }
             });
         });
-
-        console.log(uniqueIncomeTypes, uniqueExpenseTypes);
-    });
-    
-    
-    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    // TODO: move this inside the constructor for year. because now it will do these loops every time the ui loads.
-    const uniqueIncomeTypes = new Set<string>();    // this is so that we know dynamically how many row span to give in the table
-    const uniqueExpenseTypes = new Set<string>();   // we had to use 2 separate variables because in SQL both of them can have same id for different types depending on DB structure. (1 table or 2 table structure).
-    
-    let incomeIdToName = new Map<string, string>(); // we map income type id => income type name. for showing in the UI more easily.
-    let expenseIdToName = new Map<string, string>();
-
-    let incomeIdMonthBasedMonthDatas = new Map<string, ReconciliationData >();  // we map income_type_id + month index => income data. for showing in the UI more easily.
-    let expenseIdMonthBasedMonthDatas = new Map<string, ReconciliationData >();
-
-
-    
-
+    }
     // here we'll get key as incomeTypeId_MonthId
     function incomeChanged(value : string, key : string){
         let id = key.split("_")[0];
@@ -96,10 +97,19 @@
             yearData.value.calculate();
         }
     }
+
+    async function dropDownChanged(){
+        await populateData(selectedValue.value);
+    }
 </script>
 
 
 <template>
+    
+    <select v-model="selectedValue">
+         <option disabled value="">Please select one</option>
+         <option v-for="item in filters" :key="item" :value="item" @click="dropDownChanged">{{item}}</option>
+     </select>
     <table class="table table-bordered">
         <tbody>
             <tr>
