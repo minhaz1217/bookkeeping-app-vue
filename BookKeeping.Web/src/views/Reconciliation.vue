@@ -103,7 +103,6 @@
     }
 
     async function saveTable(){
-        console.log(JSON.stringify(yearData.value));
         await SaveReconciliationData(yearData.value);
     }
 </script>
